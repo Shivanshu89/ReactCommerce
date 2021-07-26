@@ -3,17 +3,44 @@ import { Switch, Route } from 'react-router-dom';
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
 import Header from './components/header/header.component';
+import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
+import { auth } from './firebase/firebase.utils';
+import { Component } from 'react';
 
-function App() {
-  return (
-       <div>
-         <Header/>
-         <Switch>
-          <Route exact path='/' component={HomePage} />
-          <Route exact path='/shop' component={ShopPage} />
-         </Switch>
-       </div>
-  );
+class App extends Component {
+    constructor(){
+      super();
+
+      this.state = {
+        currentUser:null
+      }
+    }
+    unsubscribeFromAuth = null;
+
+    componentDidMount(){
+      this.unsubscribeFromAuth = auth.onAuthStateChanged(user => { //onAuthStateChanged : will gives us back a function to unsubscribeFromAuth which will be used to close the subscription
+        this.setState({ currentUser: user });
+
+      })
+    }
+
+    componentWillUnmount() {
+      this.unsubscribeFromAuth(); // Close the subscription
+    }
+
+
+  render(){
+    return (
+      <div>
+        <Header currentUser={this.state.currentUser}/>
+        <Switch>
+         <Route exact path='/' component={HomePage} />
+         <Route exact path='/shop' component={ShopPage} />
+         <Route exact path='/signin' component={SignInAndSignUpPage} />
+        </Switch>
+      </div>
+    );
+  }
 }
 
 export default App;
