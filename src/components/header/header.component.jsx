@@ -4,14 +4,15 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {ReactComponent as Logo} from '../../assests/crown.svg'
 import { auth } from '../../firebase/firebase.utils';
+import CartIcon from '../cart-icon/cart-icon.component';
+import CartDropDown from '../cart-dropdown/cart-dropdown.component';
 
-const Header = ({currentUser}) =>(
+const Header = ({currentUser, hidden}) =>(
     <div className='header'>
         <Link className='link-contaioner' to="/">
             <Logo className='logo'/>
         </Link>
         <div className='options'>
-            {console.log("====>", currentUser)} 
             <Link className='option' to='/shop'>SHOP</Link>
             <Link className='option' to='/contact'>CONTACT</Link>
             {currentUser ? 
@@ -19,10 +20,19 @@ const Header = ({currentUser}) =>(
             :
             <Link className='option' to='/signin'>SIGN IN</Link>
             }
+            <CartIcon/>
         </div>
+        {
+            hidden ? null : <CartDropDown/>
+        }
+        
     </div>
 );
-const mapStateToProps = state => ({
-    currentUser: state.user.currentUser
+
+//syntax when you want to destructure nested vales of globalstate(root-reducer) 
+//previous: const mapStateToProps = state =>
+const mapStateToProps = ({user: { currentUser }, cart: { hidden }}) => ({
+    currentUser,
+    hidden
 });
 export default connect(mapStateToProps)(Header);
