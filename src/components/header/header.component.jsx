@@ -2,10 +2,13 @@ import React from 'react';
 import './header.styles.scss';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 import {ReactComponent as Logo} from '../../assests/crown.svg'
 import { auth } from '../../firebase/firebase.utils';
 import CartIcon from '../cart-icon/cart-icon.component';
 import CartDropDown from '../cart-dropdown/cart-dropdown.component';
+import { selectcartHidden } from '../../redux/cart/cart.selectors';
+import { selectCurrentUser } from '../../redux/user/user.selector';
 
 const Header = ({currentUser, hidden}) =>(
     <div className='header'>
@@ -31,8 +34,15 @@ const Header = ({currentUser, hidden}) =>(
 
 //syntax when you want to destructure nested vales of globalstate(root-reducer) 
 //previous: const mapStateToProps = state =>
-const mapStateToProps = ({user: { currentUser }, cart: { hidden }}) => ({
-    currentUser,
-    hidden
+// const mapStateToProps = ({user: { currentUser }, cart: { hidden }}) => ({
+//     currentUser,
+//     hidden
+// });
+
+//use of createStructureSelector
+const mapStateToProps = createStructuredSelector({
+    currentUser: selectCurrentUser,
+    hidden: selectcartHidden
 });
+
 export default connect(mapStateToProps)(Header);
